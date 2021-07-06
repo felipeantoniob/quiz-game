@@ -1,0 +1,5 @@
+@use "../abstracts/variables" as v;
+
+.question-card {
+  background-color: v.$surface-color;
+}

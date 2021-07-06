@@ -1,3 +1,27 @@
+@use "../abstracts/variables" as v;
+
 // -----------------------------------------------------------------------------
 // This file contains all styles related to the button component.
 // -----------------------------------------------------------------------------
+
+.answer-btn,
+.start-btn,
+.next-btn,
+.replay-btn {
+  background-color: v.$surface-color-2;
+  color: v.$medium-emphasis-text-color;
+  border: none;
+
+  &:hover {
+    color: v.$high-emphasis-text-color;
+    background-color: v.$surface-color-3;
+  }
+  &:focus,
+  &:active,
+  &:focus:active,
+  &:disabled {
+    background-color: v.$surface-color-3 !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+}

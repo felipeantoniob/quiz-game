@@ -1,3 +1,19 @@
 // -----------------------------------------------------------------------------
 // This file contains all application-wide Sass variables.
 // -----------------------------------------------------------------------------
+
+$red-200-color: #ef9a9a;
+$indigo-200-color: #9fa8da;
+
+$background-color: #121212;
+$error-color: #cf6679;
+$primary-color: $indigo-200-color;
+$secondary-color: $red-200-color;
+
+$surface-color: mix($primary-color, $background-color, 8%);
+$surface-color-2: mix($primary-color, $background-color, 30%);
+$surface-color-3: mix($primary-color, $background-color, 50%);
+
+$high-emphasis-text-color: rgba(255, 255, 255, 0.87);
+$medium-emphasis-text-color: rgba(255, 255, 255, 0.6);
+$disabled-text-color: rgba(255, 255, 255, 0.38);

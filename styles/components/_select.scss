@@ -1,0 +1,13 @@
+@use "../abstracts/variables" as v;
+
+.select {
+  background-color: v.$surface-color-2;
+  color: white;
+  border: none;
+  &:focus {
+    background-color: v.$surface-color-2;
+    color: white;
+    outline: red;
+    box-shadow: none;
+  }
+}
