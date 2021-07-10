@@ -3,7 +3,6 @@ import { Category, Question, QuestionState } from '../../interfaces/index'
 
 export const fetchQuizQuestions = async (
   numberOfQuestions: number,
-  // difficulty: Difficulty
   difficulty: string,
   category: Category
 ): Promise<QuestionState[]> => {
@@ -11,11 +10,11 @@ export const fetchQuizQuestions = async (
     const endpoint = `https://opentdb.com/api.php?type=multiple&amount=${numberOfQuestions}${
       difficulty ? `&difficulty=${difficulty}` : ''
     }${category ? `&category=${category.id}` : ''}`
-    // const endpoint = `https://opentdb.com/api.php?amount=${numberOfQuestions}&type=multiple${
-    //   difficulty && `&difficulty=${difficulty}`
-    // }${category ? `&category=${category.id}` : ''}`
-    console.log(endpoint)
-    const data = await (await fetch(endpoint)).json()
+
+    // console.log(endpoint)
+    const response = await fetch(endpoint)
+    const data = await response.json()
+
     return data.results.map((question: Question) => ({
       ...question,
       answers: shuffleArray([...question.incorrect_answers, question.correct_answer]),

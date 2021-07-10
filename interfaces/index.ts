@@ -1,21 +1,3 @@
-export type Question = {
-  category: string
-  correct_answer: string
-  difficulty: string
-  incorrect_answers: string[]
-  question: string
-  type: string
-}
-
-export type QuestionState = Question & { answers: string[] }
-
-export enum Difficulty {
-  EASY = 'easy',
-  MEDIUM = 'medium',
-  HARD = 'hard',
-  ANY = '',
-}
-
 export type AnswerObject = {
   question: string
   answer: string
@@ -28,6 +10,22 @@ export type Category = {
   id: number
 }
 
+export enum Difficulty {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+  ANY = '',
+}
+
+export type Question = {
+  category: string
+  correct_answer: string
+  difficulty: string
+  incorrect_answers: string[]
+  question: string
+  type: string
+}
+
 export interface QuestionCardProps {
   answers: string[]
   checkAnswer: (e: React.MouseEvent<HTMLButtonElement>) => void
@@ -36,3 +34,20 @@ export interface QuestionCardProps {
   totalQuestions: number
   userAnswer: AnswerObject | undefined
 }
+
+export interface QuizSettingsProps {
+  categoryOptions: Category[]
+  setCategory: (category: Category) => void
+  setDifficulty: (difficulty: Difficulty) => void
+  setNumberOfQuestions: (numberOfQuestions: number) => void
+  startTrivia: React.MouseEventHandler<HTMLElement>
+}
+
+export interface QuizResultsProps {
+  score: number
+  numberOfQuestions: number
+  userAnswers: AnswerObject[]
+  resetGame: React.MouseEventHandler<HTMLButtonElement>
+}
+
+export type QuestionState = Question & { answers: string[] }

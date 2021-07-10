@@ -1,4 +1,4 @@
-import { Col, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { QuestionCardProps } from '../interfaces/index'
 import { decodeHtml } from '../utils/decodeHtml'
 
@@ -10,7 +10,7 @@ const QuestionCard = ({
   totalQuestions,
   userAnswer,
 }: QuestionCardProps): JSX.Element => (
-  <Col xs="auto" className="question-card rounded text-center shadow px-5">
+  <>
     <p className="number pt-4">
       Question: {questionNumber} / {totalQuestions}
     </p>
@@ -29,7 +29,7 @@ const QuestionCard = ({
         </div>
       ))}
     </div>
-  </Col>
+  </>
 )
 
 export default QuestionCard

@@ -1,95 +1,82 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import { Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap'
+import { Button, Col, Container, Row, Spinner } from 'react-bootstrap'
 import QuestionCard from '../components/QuestionCard'
+import QuizResults from '../components/QuizResults'
+import QuizSettings from '../components/QuizSettings'
 import { AnswerObject, Category, Difficulty, QuestionState } from '../interfaces/index'
 import { fetchQuizQuestions } from './api/fetchQuizQuestions'
-import { decodeHtml } from '../utils/decodeHtml'
 
 export default function Home(): JSX.Element {
   const [category, setCategory] = useState<Category>()
   const [categoryOptions, setCategoryOptions] = useState<Category[]>([])
-  const [difficulty, setDifficulty] = useState('')
+  const [difficulty, setDifficulty] = useState<Difficulty>()
   const [gameOver, setGameOver] = useState(true)
   const [loading, setLoading] = useState(false)
-  const [number, setNumber] = useState(0)
+  const [numberOfQuestions, setNumberOfQuestions] = useState(10)
+  const [questionNumber, setQuestionNumber] = useState(0)
   const [questions, setQuestions] = useState<QuestionState[]>([])
   const [score, setScore] = useState(0)
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([])
-  const [numberOfQuestions, setNumberOfQuestions] = useState(10)
-
-  let chosenCategory: React.SetStateAction<Category[]>
-
-  const categorySelectHandler: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-    chosenCategory = categoryOptions.filter((item) => item.name === e.target.value)
-
-    setCategory(chosenCategory[0])
-  }
 
   useEffect(() => {
     const getCategoryOptions = async (): Promise<void> => {
-      const endpoint = 'https://opentdb.com/api_category.php'
-      const response = await fetch(endpoint)
-      const data = await response.json()
-      setCategoryOptions(data.trivia_categories)
-      // console.log(data.trivia_categories);
+      try {
+        const endpoint = 'https://opentdb.com/api_category.php'
+        const response = await fetch(endpoint)
+        const data = await response.json()
+        const categories = data.trivia_categories
+        setCategoryOptions(categories)
+      } catch (err) {
+        console.log(err)
+      }
     }
     getCategoryOptions()
   }, [])
 
-  // useEffect(() => {
-  //   console.log(category)
-  // }, [category])
-
-  useEffect(() => {
-    console.log(userAnswers)
-  }, [userAnswers])
-
-  const categoryOptionsSelect = categoryOptions.map((item, index) => {
-    return (
-      <option key={index} value={item.name} data-key={item.id}>
-        {item.name}
-      </option>
-    )
-  })
-
-  const startTrivia = async (): Promise<void> => {
+  const startTrivia: React.MouseEventHandler<HTMLButtonElement> = async () => {
     setLoading(true)
     setGameOver(false)
-
     const newQuestions = await fetchQuizQuestions(numberOfQuestions, difficulty, category)
 
     setQuestions(newQuestions)
     setScore(0)
     setUserAnswers([])
-    setNumber(0)
+    setQuestionNumber(0)
     setLoading(false)
   }
 
   const checkAnswer: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (!gameOver) {
+      const question = questions[questionNumber].question
       const answer = e.currentTarget.value
-      const correct = questions[number].correct_answer === answer
+      const correctAnswer = questions[questionNumber].correct_answer
+      const correct = correctAnswer === answer
       if (correct) setScore((prev) => prev + 1)
       const answerObject = {
-        question: questions[number].question,
         answer,
         correct,
-        correctAnswer: questions[number].correct_answer,
+        correctAnswer: correctAnswer,
+        question: question,
       }
       setUserAnswers((prev) => [...prev, answerObject])
     }
   }
 
-  const nextQuestion = (): void => {
-    const nextQuestion = number + 1
+  const nextQuestion: React.MouseEventHandler<HTMLButtonElement> = () => {
+    const nextQuestion = questionNumber + 1
     console.log(nextQuestion)
     if (nextQuestion === numberOfQuestions) {
       // setGameOver(true)
-      // console.log('nextQuestion === numberOfQuestions')
     } else {
-      setNumber(nextQuestion)
+      setQuestionNumber(nextQuestion)
     }
+  }
+
+  const resetGame: React.MouseEventHandler<HTMLButtonElement> = () => {
+    setGameOver(true)
+    setUserAnswers([])
+    setNumberOfQuestions(10)
   }
 
   return (
@@ -102,64 +89,17 @@ export default function Home(): JSX.Element {
       <main className="App vh-100 text-white">
         <Container>
           <h1 className="text-center text-white pt-5 pb-3 fw-bold">NEXTJS QUIZ</h1>
+
           <Row className="justify-content-center">
             <Col xs={12} lg={9}>
               {gameOver && (
-                <div className="">
-                  <Form className="question-card justify-content-center rounded shadow mb-3 px-5 py-5">
-                    <Form.Group controlId="length" className="pb-3">
-                      <Form.Label>Number of Questions:</Form.Label>
-                      <Form.Control
-                        as="select"
-                        className="select"
-                        defaultValue="10"
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                          setNumberOfQuestions(parseInt(e.target.value))
-                        }}
-                      >
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <Form.Group className="pb-3">
-                      <Form.Label>Select Category:</Form.Label>
-                      <Form.Control as="select" className="select" onChange={categorySelectHandler}>
-                        <option key="" value="">
-                          Any Category
-                        </option>
-                        {categoryOptionsSelect}
-                      </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="difficulty" className="pb-3">
-                      <Form.Label>Select Difficulty:</Form.Label>
-                      <Form.Control
-                        as="select"
-                        className="select"
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                          setDifficulty(e.target.value)
-                        }}
-                      >
-                        <option value={Difficulty.ANY}>Any Difficulty</option>
-                        <option value={Difficulty.EASY}>Easy</option>
-                        <option value={Difficulty.MEDIUM}>Medium</option>
-                        <option value={Difficulty.HARD}>Hard</option>
-                      </Form.Control>
-                    </Form.Group>
-                  </Form>
-                  <Row className="justify-content-center">
-                    <Col xs="auto">
-                      <Button
-                        className="d-flex start-btn mb-3 fs-3"
-                        size="lg"
-                        onClick={startTrivia}
-                      >
-                        Start
-                      </Button>
-                    </Col>
-                  </Row>
-                </div>
+                <QuizSettings
+                  setNumberOfQuestions={setNumberOfQuestions}
+                  startTrivia={startTrivia}
+                  categoryOptions={categoryOptions}
+                  setCategory={setCategory}
+                  setDifficulty={setDifficulty}
+                />
               )}
             </Col>
           </Row>
@@ -171,73 +111,51 @@ export default function Home(): JSX.Element {
               </Col>
             </Row>
           )}
-          {!loading && !gameOver && (
+
+          {!loading && !gameOver && userAnswers.length !== numberOfQuestions && (
             <p className="score text-center text-white fs-3">Score: {score}</p>
           )}
 
           {!loading && !gameOver && userAnswers.length !== numberOfQuestions && (
             <>
-              <Row className="justify-content-center">
-                <QuestionCard
-                  questionNumber={number + 1}
-                  totalQuestions={numberOfQuestions}
-                  question={questions[number].question}
-                  answers={questions[number].answers}
-                  userAnswer={userAnswers ? userAnswers[number] : undefined}
-                  checkAnswer={checkAnswer}
-                />
+              <Row className="justify-content-center mx-1">
+                <Col xs="auto" className="question-card rounded text-center shadow px-5">
+                  <QuestionCard
+                    questionNumber={questionNumber + 1}
+                    totalQuestions={numberOfQuestions}
+                    question={questions[questionNumber]?.question}
+                    answers={questions[questionNumber]?.answers}
+                    userAnswer={userAnswers ? userAnswers[questionNumber] : undefined}
+                    checkAnswer={checkAnswer}
+                  />
+                </Col>
               </Row>
             </>
           )}
 
           {userAnswers.length === numberOfQuestions && (
             <div>
-              <Form className="question-card justify-content-center text-center rounded shadow mb-3 px-5 py-5">
-                <Form.Label className="fs-1 mb-5">Results</Form.Label>
-                <h1 className="mb-5">
-                  You got {score}/{numberOfQuestions} correct answers!
-                </h1>
-                {userAnswers.map((item, index) => {
-                  return (
-                    <div key={index} className="mb-5">
-                      <p>
-                        Question {index + 1}: {decodeHtml(item.question)}
-                      </p>
-                      <p>Your Answer: {decodeHtml(item.answer)}</p>
-                      <p>Correct Answer: {decodeHtml(item.correctAnswer)}</p>
-                    </div>
-                  )
-                })}
-                <Form.Group controlId="Results" className="pb-3"></Form.Group>
-              </Form>
-              <Row className="justify-content-center">
-                <Col xs="auto">
-                  <Button
-                    className="replay-btn mt-3 mb-5 fs-1"
-                    onClick={() => {
-                      setGameOver(true)
-                      setUserAnswers([])
-                    }}
-                  >
-                    Play another round
-                  </Button>
-                </Col>
-              </Row>
+              <QuizResults
+                score={score}
+                numberOfQuestions={numberOfQuestions}
+                userAnswers={userAnswers}
+                resetGame={resetGame}
+              />
             </div>
           )}
 
           {!gameOver &&
-          !loading &&
-          userAnswers.length === number + 1 &&
-          number !== numberOfQuestions - 1 ? (
-            <Row className="justify-content-center">
-              <Col xs="auto">
-                <Button className="next-btn mt-3" size="lg" onClick={nextQuestion}>
-                  Next Question
-                </Button>
-              </Col>
-            </Row>
-          ) : null}
+            !loading &&
+            userAnswers.length === questionNumber + 1 &&
+            questionNumber !== numberOfQuestions - 1 && (
+              <Row className="justify-content-center">
+                <Col xs="auto">
+                  <Button className="next-btn mt-3" size="lg" onClick={nextQuestion}>
+                    Next Question
+                  </Button>
+                </Col>
+              </Row>
+            )}
         </Container>
       </main>
     </>
