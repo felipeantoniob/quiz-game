@@ -9,7 +9,7 @@ import { decodeHtml } from '../utils/decodeHtml'
 export default function Home(): JSX.Element {
   const [category, setCategory] = useState<Category>()
   const [categoryOptions, setCategoryOptions] = useState<Category[]>([])
-  const [difficulty, setDifficulty] = useState('easy')
+  const [difficulty, setDifficulty] = useState('')
   const [gameOver, setGameOver] = useState(true)
   const [loading, setLoading] = useState(false)
   const [number, setNumber] = useState(0)
@@ -68,13 +68,9 @@ export default function Home(): JSX.Element {
 
   const checkAnswer: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (!gameOver) {
-      // User's answer
       const answer = e.currentTarget.value
-      // Check answer against correct answer
       const correct = questions[number].correct_answer === answer
-      // Add score if answer is correct
       if (correct) setScore((prev) => prev + 1)
-      // Save answer in the array for user answers
       const answerObject = {
         question: questions[number].question,
         answer,
@@ -86,12 +82,11 @@ export default function Home(): JSX.Element {
   }
 
   const nextQuestion = (): void => {
-    // Move on to the next question if not the last question
     const nextQuestion = number + 1
     console.log(nextQuestion)
     if (nextQuestion === numberOfQuestions) {
       // setGameOver(true)
-      console.log('nextQuestion === numberOfQuestions')
+      // console.log('nextQuestion === numberOfQuestions')
     } else {
       setNumber(nextQuestion)
     }
@@ -143,10 +138,10 @@ export default function Home(): JSX.Element {
                         as="select"
                         className="select"
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                          console.log(e)
                           setDifficulty(e.target.value)
                         }}
                       >
+                        <option value={Difficulty.ANY}>Any Difficulty</option>
                         <option value={Difficulty.EASY}>Easy</option>
                         <option value={Difficulty.MEDIUM}>Medium</option>
                         <option value={Difficulty.HARD}>Hard</option>
@@ -182,7 +177,6 @@ export default function Home(): JSX.Element {
 
           {!loading && !gameOver && userAnswers.length !== numberOfQuestions && (
             <>
-              {/* <p className="score text-center text-white fs-3">Score: {score}</p> */}
               <Row className="justify-content-center">
                 <QuestionCard
                   questionNumber={number + 1}
