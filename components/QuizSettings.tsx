@@ -39,7 +39,7 @@ const QuizSettings = ({
             as="select"
             className="select"
             defaultValue="10"
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            onChange={(e) => {
               setNumberOfQuestions(parseInt(e.target.value))
             }}
           >
