@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { Category, Difficulty, QuizSettingsProps } from '../interfaces/index'
 
@@ -9,9 +10,10 @@ const QuizSettings = ({
   startTrivia,
 }: QuizSettingsProps): JSX.Element => {
   let chosenCategory: React.SetStateAction<Category[]>
-  const categorySelectHandler: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-    chosenCategory = categoryOptions.filter((item) => item.name === e.target.value)
+  const categorySelectHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    chosenCategory = categoryOptions.filter((item) => item.name === event.target.value)
     setCategory(chosenCategory[0])
+    console.log(event)
   }
 
   const categoryOptionsSelect = categoryOptions.map((item, index) => {
