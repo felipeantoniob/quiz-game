@@ -10,10 +10,15 @@ const QuizSettings = ({
   startTrivia,
 }: QuizSettingsProps): JSX.Element => {
   let chosenCategory: React.SetStateAction<Category[]>
+
   const categorySelectHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     chosenCategory = categoryOptions.filter((item) => item.name === event.target.value)
     setCategory(chosenCategory[0])
     console.log(event)
+  }
+
+  const difficultySelectHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    setDifficulty(event.target.value as Difficulty)
   }
 
   const categoryOptionsSelect = categoryOptions.map((item, index) => {
@@ -59,13 +64,7 @@ const QuizSettings = ({
         </Form.Group>
         <Form.Group controlId="difficulty" className="pb-3">
           <Form.Label>Select Difficulty:</Form.Label>
-          <Form.Control
-            as="select"
-            className="select"
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setDifficulty(e.target.value as Difficulty)
-            }}
-          >
+          <Form.Control as="select" className="select" onChange={difficultySelectHandler}>
             <option value={Difficulty.ANY}>Any Difficulty</option>
             <option value={Difficulty.EASY}>Easy</option>
             <option value={Difficulty.MEDIUM}>Medium</option>
