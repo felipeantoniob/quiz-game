@@ -25,3 +25,21 @@
     box-shadow: none !important;
   }
 }
+
+.correct:disabled {
+  background-color: green;
+}
+
+.correct {
+  background-color: green;
+  &:disabled {
+    background-color: green !important;
+  }
+}
+
+.wrong {
+  background-color: red;
+  &:disabled {
+    background-color: red !important;
+  }
+}

@@ -3,8 +3,8 @@ import { QuizResultsProps } from '../interfaces'
 import { decodeHtml } from '../utils/decodeHtml'
 
 const QuizResults = ({
-  resetGame,
   numberOfQuestions,
+  resetGame,
   score,
   userAnswers,
 }: QuizResultsProps): JSX.Element => {
