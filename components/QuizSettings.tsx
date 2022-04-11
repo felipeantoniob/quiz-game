@@ -11,13 +11,13 @@ const QuizSettings = ({
 }: QuizSettingsProps): JSX.Element => {
   let chosenCategory: React.SetStateAction<Category[]>
 
-  const categorySelectHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+  const categorySelectHandler: React.ChangeEventHandler<HTMLInputElement> = (event): void => {
     chosenCategory = categoryOptions.filter((item) => item.name === event.target.value)
     setCategory(chosenCategory[0])
     console.log(event)
   }
 
-  const difficultySelectHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+  const difficultySelectHandler: React.ChangeEventHandler<HTMLInputElement> = (event): void => {
     setDifficulty(event.target.value as Difficulty)
   }
 
@@ -49,13 +49,19 @@ const QuizSettings = ({
             onChange={(e) => {
               setNumberOfQuestions(parseInt(e.target.value))
             }}
+            data-cy="number-of-questions-select"
           >
             {totalNumberOfQuestions}
           </Form.Control>
         </Form.Group>
         <Form.Group className="pb-3">
           <Form.Label>Select Category:</Form.Label>
-          <Form.Control as="select" className="select" onChange={categorySelectHandler}>
+          <Form.Control
+            as="select"
+            className="select"
+            onChange={categorySelectHandler}
+            data-cy="category-select"
+          >
             <option key="" value="">
               Any Category
             </option>
@@ -64,17 +70,31 @@ const QuizSettings = ({
         </Form.Group>
         <Form.Group controlId="difficulty" className="pb-3">
           <Form.Label>Select Difficulty:</Form.Label>
-          <Form.Control as="select" className="select" onChange={difficultySelectHandler}>
-            <option value={Difficulty.ANY}>Any Difficulty</option>
+          <Form.Control
+            as="select"
+            className="select"
+            onChange={difficultySelectHandler}
+            data-cy="difficulty-select"
+          >
+            {/* <option value={Difficulty.ANY}>Any Difficulty</option>
             <option value={Difficulty.EASY}>Easy</option>
             <option value={Difficulty.MEDIUM}>Medium</option>
-            <option value={Difficulty.HARD}>Hard</option>
+            <option value={Difficulty.HARD}>Hard</option> */}
+            <option value="">Any Difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </Form.Control>
         </Form.Group>
       </Form>
       <Row className="justify-content-center">
         <Col xs="auto">
-          <Button className="d-flex start-btn mb-3 fs-3" size="lg" onClick={startTrivia}>
+          <Button
+            className="d-flex start-btn mb-3 fs-3"
+            size="lg"
+            onClick={startTrivia}
+            data-cy="start-button"
+          >
             Start
           </Button>
         </Col>

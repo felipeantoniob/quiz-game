@@ -5,8 +5,9 @@ import { Button, Col, Container, Row, Spinner } from 'react-bootstrap'
 import QuestionCard from '../components/QuestionCard'
 import QuizResults from '../components/QuizResults'
 import QuizSettings from '../components/QuizSettings'
-import { AnswerObject, Category, Difficulty, QuestionState } from '../interfaces/index'
+
 import { fetchQuizQuestions } from './api/fetchQuizQuestions'
+import { AnswerObject, Category, Difficulty, QuestionState } from '../interfaces/index'
 
 export default function Home(): JSX.Element {
   const [category, setCategory] = useState<Category>()

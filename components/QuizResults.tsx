@@ -1,4 +1,5 @@
 import { Button, Col, Form, Row } from 'react-bootstrap'
+
 import { QuizResultsProps } from '../interfaces'
 import { decodeHtml } from '../utils/decodeHtml'
 
