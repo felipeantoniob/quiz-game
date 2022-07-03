@@ -1,5 +1,5 @@
-import { shuffleArray } from '../../utils/shuffleArray'
 import { Category, Question, QuestionState, Difficulty } from '../../interfaces/index'
+import { shuffleArray } from '../../utils/shuffleArray'
 
 export const fetchQuizQuestions = async (
   numberOfQuestions: number,

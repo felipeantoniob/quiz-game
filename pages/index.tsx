@@ -1,17 +1,43 @@
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Col, Container, Row, Spinner } from 'react-bootstrap'
+import { GetServerSideProps } from 'next'
 
 import QuestionCard from '../components/QuestionCard'
 import QuizResults from '../components/QuizResults'
 import QuizSettings from '../components/QuizSettings'
 
 import { fetchQuizQuestions } from './api/fetchQuizQuestions'
-import { AnswerObject, Category, Difficulty, QuestionState } from '../interfaces/index'
+import {
+  AnswerObject,
+  Category,
+  Difficulty,
+  QuestionState,
+  HomeProps,
+  Question,
+} from '../interfaces/index'
 
-export default function Home(): JSX.Element {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const endpoint = 'https://opentdb.com/api_category.php'
+  const response = await fetch(endpoint)
+  const data = await response.json()
+
+  if (!data) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: { triviaCategories: data.trivia_categories },
+  }
+}
+
+export default function Home({ triviaCategories }: HomeProps): JSX.Element {
   const [category, setCategory] = useState<Category>()
-  const [categoryOptions, setCategoryOptions] = useState<Category[]>([])
   const [difficulty, setDifficulty] = useState<Difficulty>()
   const [gameOver, setGameOver] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -21,24 +47,10 @@ export default function Home(): JSX.Element {
   const [score, setScore] = useState(0)
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([])
 
-  useEffect(() => {
-    const getCategoryOptions = async (): Promise<void> => {
-      try {
-        const endpoint = 'https://opentdb.com/api_category.php'
-        const response = await fetch(endpoint)
-        const data = await response.json()
-        const categories = data.trivia_categories
-        setCategoryOptions(categories)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    getCategoryOptions()
-  }, [])
-
   const startTrivia: React.MouseEventHandler<HTMLButtonElement> = async () => {
     setLoading(true)
     setGameOver(false)
+
     const newQuestions = await fetchQuizQuestions(numberOfQuestions, difficulty, category)
 
     setQuestions(newQuestions)
@@ -97,7 +109,7 @@ export default function Home(): JSX.Element {
                 <QuizSettings
                   setNumberOfQuestions={setNumberOfQuestions}
                   startTrivia={startTrivia}
-                  categoryOptions={categoryOptions}
+                  categoryOptions={triviaCategories}
                   setCategory={setCategory}
                   setDifficulty={setDifficulty}
                 />

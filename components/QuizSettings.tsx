@@ -14,7 +14,6 @@ const QuizSettings = ({
   const categorySelectHandler: React.ChangeEventHandler<HTMLInputElement> = (event): void => {
     chosenCategory = categoryOptions.filter((item) => item.name === event.target.value)
     setCategory(chosenCategory[0])
-    console.log(event)
   }
 
   const difficultySelectHandler: React.ChangeEventHandler<HTMLInputElement> = (event): void => {

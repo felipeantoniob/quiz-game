@@ -46,3 +46,10 @@ export interface QuizResultsProps {
 }
 
 export type QuestionState = Question & { answers: string[] }
+
+export interface HomeProps {
+  triviaCategories: {
+    id: number
+    name: string
+  }[]
+}
